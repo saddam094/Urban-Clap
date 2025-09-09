@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:urban_clap/feature/authentication/initial_page/cleaning_screen.dart';
+import 'package:urban_clap/feature/authentication/login/presentation/view/login_screen.dart';
 import 'package:urban_clap/res/color/app_color.dart';
 import 'package:urban_clap/res/constant/constant_data.dart';
 
@@ -98,7 +99,7 @@ class _LaundryScreenState extends State<LaundryScreen> {
                     /// Skip
                     InkWell(
                       onTap: () {
-
+                        Get.offAll(() => const LoginScreen());
                       },
                       child: Text('Skip', style: TextStyle(fontSize: Constant.width * .04, fontWeight: FontWeight.w800, color: AppColors.primaryColor))
                     ),

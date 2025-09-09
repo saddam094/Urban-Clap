@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:urban_clap/feature/authentication/login/presentation/controller/login_controller.dart';
-import 'package:urban_clap/feature/authentication/login/presentation/view/otp_screen.dart';
 import 'package:urban_clap/res/color/app_color.dart';
 import 'package:urban_clap/res/common/common_button.dart';
 import 'package:urban_clap/res/common/custom_app_bar.dart';
 import 'package:urban_clap/res/constant/constant_data.dart';
+import 'package:urban_clap/res/utils/utils.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,6 +17,10 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
 
   final loginVM = Get.put(LoginController());
+
+  bool isOnlyDigits(String str) {
+    return RegExp(r'^[0-9]+$').hasMatch(str);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               /// Heading Container
               CustomAppBar(title: ''),
-          
+
               Container(
                 height: Constant.height * .87,
                 width: Constant.width * 1,
@@ -49,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text('Enter Your Phone Number', style: TextStyle(fontSize: Constant.width * .05, fontWeight: FontWeight.bold, color: AppColors.black)),
 
                     SizedBox(height: Constant.height * .01),
-          
+
                     Text('We’ll send an OTP verifcation code to you', style: TextStyle(fontSize: Constant.width * .04, color: AppColors.greyTextDarkColor)),
 
                     SizedBox(height: Constant.height * .04),
@@ -71,9 +75,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           /// +91
                           Text('+ 91', style: TextStyle(fontSize: Constant.width * .045, fontWeight: FontWeight.bold, color: AppColors.primaryColor)),
-          
+
                           SizedBox(width: Constant.width * .02),
-          
+
                           /// Divider
                           Container(
                             height: Constant.height  * .04,
@@ -82,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               color: AppColors.primaryColor
                             ),
                           ),
-          
+
                           /// TextField ---> Phone Number
                           Expanded(
                             child: TextFormField(
@@ -101,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-          
+
                         ],
                       ),
                     ),
@@ -110,17 +114,26 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: Constant.height * .55),
 
                     /// Send me The Code
-                    CommonButton(
-                      onTap: () {
-                        Get.to(() => const OtpScreen(phone: '6202548771',));
-                      },
-                      title: 'Send me the code',
-                      height: Constant.height * .06,
-                    )
+                    Obx(() {
+                      return CommonButton(
+                        onTap: () {
+
+                          if(isOnlyDigits(loginVM.phoneController.value.text) && loginVM.phoneController.value.text.length == 10){
+                              loginVM.login();
+                          } else{
+                            Utils.toastMessageTop('Incorrect Phone Number');
+                          }
+
+                        },
+                        title: 'Send me the code',
+                        height: Constant.height * .06,
+                        isLoading: loginVM.isLoading.value,
+                      );
+                    }),
                   ],
                 ),
               ),
-          
+
             ],
           ),
         ),

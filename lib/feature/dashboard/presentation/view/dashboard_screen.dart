@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:urban_clap/feature/dashboard/presentation/controller/dashboard_controller.dart';
+import 'package:urban_clap/feature/edit_profile/presentation/view/edit_profile_screen.dart';
 import 'package:urban_clap/feature/money_transfer/presentation/view/money_transfer_screen.dart';
 import 'package:urban_clap/feature/particular_appointment/presentation/view/particular_appointment_screen.dart';
+import 'package:urban_clap/feature/profile/presentation/view/profile_screen.dart';
 import 'package:urban_clap/res/color/app_color.dart';
 import 'package:urban_clap/res/common/common_button.dart';
 import 'package:urban_clap/res/constant/constant_data.dart';
@@ -56,39 +58,44 @@ class _DashboardScreenState extends State<DashboardScreen> {
               SizedBox(height: Constant.height * .05),
               /// Profile Box
               Obx(() {
-                return SizedBox(
-                  height: Constant.height * .07,
-                  width: Constant.width * .75,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: Constant.height * .06,
-                        width: Constant.width * .12,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.cardBg1,
-                          image: DecorationImage(
-                            image: AssetImage('assets/images/profile/person male.png'),
-                            fit: BoxFit.cover
+                return InkWell(
+                  onTap: () {
+                    Get.to(() => const ProfileScreen());
+                  },
+                  child: SizedBox(
+                    height: Constant.height * .07,
+                    width: Constant.width * .75,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: Constant.height * .06,
+                          width: Constant.width * .12,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.cardBg1,
+                            image: DecorationImage(
+                              image: AssetImage('assets/images/profile/person male.png'),
+                              fit: BoxFit.cover
+                            ),
+                            border: Border.all(
+                              color: AppColors.white
+                            )
                           ),
-                          border: Border.all(
-                            color: AppColors.white
-                          )
                         ),
-                      ),
 
-                      SizedBox(width: Constant.width * .02),
+                        SizedBox(width: Constant.width * .02),
 
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('User', style: TextStyle(fontSize: Constant.width * .04, color: AppColors.greyTextLightColor)),
-                          Text(dashboardVM.name.value, style: TextStyle(fontSize: Constant.width * .04, fontWeight: FontWeight.bold, color: AppColors.black), maxLines: 1,),
-                        ],
-                      ),
-                    ],
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('User', style: TextStyle(fontSize: Constant.width * .04, color: AppColors.greyTextLightColor)),
+                            Text(dashboardVM.name.value, style: TextStyle(fontSize: Constant.width * .04, fontWeight: FontWeight.bold, color: AppColors.black), maxLines: 1,),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },),
@@ -104,7 +111,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
               /// Edit Profile
               drawerCard('Edit Profile', Icons.edit_outlined, () {
-
+                Get.to(() => const EditProfileScreen());
               },),
 
               SizedBox(height: Constant.height * .01),
@@ -508,57 +515,60 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   /// Drawer Card
   Widget drawerCard(String title, IconData icon, VoidCallback method){
-    return Container(
-      height: Constant.height * .07,
-      width: Constant.width * 1,
-      padding: EdgeInsets.only(
-        left: Constant.width * .03,
-        // right: Constant.width * .03,
-      ),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.dashboardGradiant1,
-            AppColors.dashboardGradiant2
-          ],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight
+    return InkWell(
+      onTap: method,
+      child: Container(
+        height: Constant.height * .07,
+        width: Constant.width * 1,
+        padding: EdgeInsets.only(
+          left: Constant.width * .03,
+          // right: Constant.width * .03,
         ),
-        borderRadius: BorderRadius.circular(Constant.width * .02)
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          /// Icon
-          Container(
-            height: Constant.height * .06,
-            width: Constant.width * .12,
-            decoration: BoxDecoration(
-              color: AppColors.drawerGradiant,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.white
-              )
-            ),
-            child: Center(
-              child: Icon(icon, size: Constant.width * .06, color: AppColors.greyTextDarkColor),
-            ),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AppColors.dashboardGradiant1,
+              AppColors.dashboardGradiant2
+            ],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight
           ),
-          
-          /// title
-          SizedBox(
-            width: Constant.width * .37,
-            child: Text(title, style: TextStyle(fontSize: Constant.width * .04, fontWeight: FontWeight.bold, color: AppColors.black)),
-          ),
+          borderRadius: BorderRadius.circular(Constant.width * .02)
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            /// Icon
+            Container(
+              height: Constant.height * .06,
+              width: Constant.width * .12,
+              decoration: BoxDecoration(
+                color: AppColors.drawerGradiant,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColors.white
+                )
+              ),
+              child: Center(
+                child: Icon(icon, size: Constant.width * .06, color: AppColors.greyTextDarkColor),
+              ),
+            ),
 
-          /// Right Navigate Icon
-          SizedBox(
-            width: Constant.width * .1,
-            child: Center(
-              child: Icon(Icons.keyboard_arrow_right, size: Constant.width * .1, color: AppColors.greyTextLightColor),
+            /// title
+            SizedBox(
+              width: Constant.width * .37,
+              child: Text(title, style: TextStyle(fontSize: Constant.width * .04, fontWeight: FontWeight.bold, color: AppColors.black)),
             ),
-          )
-        ],
+
+            /// Right Navigate Icon
+            SizedBox(
+              width: Constant.width * .1,
+              child: Center(
+                child: Icon(Icons.keyboard_arrow_right, size: Constant.width * .1, color: AppColors.greyTextLightColor),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

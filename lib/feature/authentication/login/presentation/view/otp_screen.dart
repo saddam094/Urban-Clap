@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
-import 'package:urban_clap/feature/authentication/document_verification/presentation/view/document_verification_screen.dart';
 import 'package:urban_clap/feature/authentication/login/presentation/controller/login_controller.dart';
 import 'package:urban_clap/res/color/app_color.dart';
 import 'package:urban_clap/res/common/common_button.dart';
 import 'package:urban_clap/res/common/custom_app_bar.dart';
 import 'package:urban_clap/res/constant/constant_data.dart';
+import 'package:urban_clap/res/utils/utils.dart';
 
 class OtpScreen extends StatefulWidget {
   final String phone;
@@ -19,6 +19,10 @@ class OtpScreen extends StatefulWidget {
 class _OtpScreenState extends State<OtpScreen> {
 
   final loginVM = Get.put(LoginController());
+
+  bool isOnlyDigits(String str) {
+    return RegExp(r'^[0-9]+$').hasMatch(str);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,13 +93,20 @@ class _OtpScreenState extends State<OtpScreen> {
                     SizedBox(height: Constant.height * .52),
 
                     /// Send me The Code
-                    CommonButton(
-                      onTap: () {
-                        Get.offAll(() => const DocumentVerificationScreen());
-                      },
-                      title: 'Submit',
-                      height: Constant.height * .06,
-                    )
+                    Obx(() {
+                      return CommonButton(
+                        onTap: () {
+                          if(isOnlyDigits(loginVM.otpController.value.text) && loginVM.otpController.value.text.length == 4){
+                            loginVM.otpVerification(widget.phone);
+                          } else{
+                            Utils.toastMessageTop('Invalid OTP');
+                          }
+                        },
+                        title: 'Submit',
+                        height: Constant.height * .06,
+                        isLoading: loginVM.isLoading.value,
+                      );
+                    },)
                   ],
                 ),
               ),

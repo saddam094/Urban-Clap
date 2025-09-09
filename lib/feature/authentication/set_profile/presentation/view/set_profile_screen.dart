@@ -1,11 +1,11 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:urban_clap/feature/authentication/set_profile/presentation/controller/set_profile_controller.dart';
-import 'package:urban_clap/feature/dashboard/presentation/view/dashboard_screen.dart';
 import 'package:urban_clap/res/color/app_color.dart';
+import 'package:urban_clap/res/common/common_button.dart';
 import 'package:urban_clap/res/common/custom_app_bar.dart';
 import 'package:urban_clap/res/constant/constant_data.dart';
+import 'package:urban_clap/res/utils/utils.dart';
 
 class SetProfileScreen extends StatefulWidget {
   const SetProfileScreen({super.key});
@@ -41,15 +41,25 @@ class _SetProfileScreenState extends State<SetProfileScreen> {
                 Stack(
                   alignment: Alignment.bottomRight,
                   children: [
-                    CircleAvatar(
-                      radius: Constant.width * .15,
-                      backgroundImage: AssetImage("assets/images/profile/person male.png"), // Replace with Network or File
-                    ),
+                    Obx(() {
+                      return CircleAvatar(
+                        radius: Constant.width * .15,
+                        backgroundImage: setProfileVM.selectedImage.value != null
+                            ? FileImage(setProfileVM.selectedImage.value!)
+                            : AssetImage("assets/images/profile/person male.png") as ImageProvider,
+                      );
+                    }),
+
                     Positioned(
-                      child: CircleAvatar(
-                        radius: Constant.width * .05,
-                        backgroundColor: AppColors.primaryColor,
-                        child: Icon(Icons.camera_alt, size: Constant.width * .06, color: AppColors.white),
+                      child: InkWell(
+                        onTap: () {
+                          setProfileVM.pickImage();
+                        },
+                        child: CircleAvatar(
+                          radius: Constant.width * .05,
+                          backgroundColor: AppColors.primaryColor,
+                          child: Icon(Icons.camera_alt, size: Constant.width * .06, color: AppColors.white),
+                        ),
                       ),
                     ),
                   ],
@@ -120,26 +130,35 @@ class _SetProfileScreenState extends State<SetProfileScreen> {
                 SizedBox(height: Constant.height * .01),
 
                 /// Confirm Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if(kDebugMode){
-                        print("Name: ${setProfileVM.nameController.value.text}");
-                        print("Location: ${setProfileVM.locationController.value.text}");
-                        print("Selected Skills: ${setProfileVM.selectedSkills}");
-                      }
+                Obx(() {
+                  return CommonButton(
+                    onTap: () {
+                      if(setProfileVM.nameController.value.text.isNotEmpty && setProfileVM.locationController.value.text.isNotEmpty && setProfileVM.selectedSkills.isNotEmpty && setProfileVM.selectedImage.value != null){
+                        setProfileVM.setProfile();
+                      } else{
+                        if(setProfileVM.nameController.value.text.isEmpty){
+                          Utils.toastMessageTop('Enter Your Name');
+                        }
 
-                      Get.offAll(() => DashboardScreen());
+                        if(setProfileVM.locationController.value.text.isEmpty){
+                          Utils.toastMessageTop('Enter Your Location');
+                        }
+
+                        if(setProfileVM.selectedSkills.isEmpty){
+                          Utils.toastMessageTop('Select Your Skills');
+                        }
+
+                        if(setProfileVM.selectedImage.value == null){
+                          Utils.toastMessageTop('Select Profile Image');
+                        }
+
+                      }
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      padding: EdgeInsets.symmetric(vertical: Constant.height * .015),
-                    ),
-                    child: Text("Submit", style: TextStyle(fontSize: Constant.width * .045, fontWeight: FontWeight.bold, color: AppColors.white)),
-                  ),
-                ),
+                    title: 'Submit',
+                    height: Constant.height * .06,
+                    isLoading: setProfileVM.isLoading.value,
+                  );
+                }),
 
                 SizedBox(height: Constant.height * .01),
               ],

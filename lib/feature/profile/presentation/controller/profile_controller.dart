@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,9 +45,9 @@ class ProfileController extends GetxController{
 
   void venderProfile()async{
 
-    // String? phone = await preferences.getEmail();
+    String? phone = await preferences.getPhone();
 
-    _api.userProfileApi('6202548771').then((response) {
+    _api.userProfileApi(phone!).then((response) {
 
       if(kDebugMode){
         print('Response : $response');
@@ -63,7 +62,7 @@ class ProfileController extends GetxController{
 
         nameController.value.text = data.name;
         locationController.value.text = data.location;
-        phoneController.value.text = data.phone;
+        // phoneController.value.text = data.phone;
         profileImage.value = data.profileImage;
 
         setRxRequestStatusUserProfile(Status.COMPLETED);
@@ -92,7 +91,7 @@ class ProfileController extends GetxController{
     loading.value = true;
 
     if (selectedImage.value != null) {
-      await uploadImageToS3();
+      await uploadImageToS3(selectedImage.value!);
 
       if (profileImage.value.isEmpty) {
         loading.value = false;
@@ -100,11 +99,13 @@ class ProfileController extends GetxController{
       }
     }
 
+    String? phone = await preferences.getPhone();
+
     Map<String, dynamic> data = {
-      'phone': phoneController.value.text,
+      'phone': phone,
       'name': nameController.value.text,
       'location': locationController.value.text,
-      'profile_image': profileImage.value, // this will have new uploaded URL/key
+      'profile_image': profileImage.value,
     };
 
     _api.editProfileApi(data).then((response) {
@@ -139,56 +140,53 @@ class ProfileController extends GetxController{
     });
   }
 
-  Future<void> getPresigned() async {
-    Map<String, dynamic> data = {"fileName": selectedImageName.value};
+  Future<String?> getPresigned(String fileName) async {
+    Map<String, dynamic> data = {
+      "fileName": fileName
+    };
 
-    _api.getPresignedApi(data).then((response) {
-      if (kDebugMode) {
-        print('Response : $response');
-      }
+    final response = await _api.getPresignedApi(data);
 
-      try {
-        if (response['body-json']['statusCode'] == 200) {
-          signedURL.value = response['body-json']['body']['uploadDetails'][0]['signedUrl'];
-          key.value = response['body-json']['body']['uploadDetails'][0]['key'];
+    if (kDebugMode) {
+      print('Response : $response');
+    }
 
-          if (kDebugMode) {
-            print('Signed URL Fetch Successfully');
-          }
-        } else {
-          if (kDebugMode) {
-            print("Presigned failed with status: ${response['statusCode']}");
-          }
-        }
-      } catch (e) {
+    try {
+      if (response['body-json']['statusCode'] == 200) {
         if (kDebugMode) {
-          print("Error in getPresigned(): $e");
+          print('Signed URL Fetch Successfully');
+        }
+        return response['body-json']['body']['uploadDetails'][0]['signedUrl'];
+      } else {
+        if (kDebugMode) {
+          print("Failed: ${response['body-json']['statusCode']}");
         }
       }
-    }).onError((error, stackTrace) {
-      loading.value = false;
+    } catch (e) {
       if (kDebugMode) {
-        print("Error fetching presigned: $error");
+        print(e.toString());
       }
-    });
+    }
+
+    return null;
   }
 
-  Future<void> uploadImageToS3() async {
+  Future<void> uploadImageToS3(File file) async {
 
-    await getPresigned();
+    String? preSignedUrl = await getPresigned(selectedImageName.value);
 
-    if(signedURL.value == '' || key.value == ''){
+    if(preSignedUrl == null){
       if (kDebugMode) {
         print('signed url not fetched');
       }
       return;
     }
 
+    signedURL.value = preSignedUrl;
+
     try {
       final request = http.Request('PUT', Uri.parse(signedURL.value));
-      request.bodyBytes =
-      await selectedImage.value!.readAsBytes();
-
+      request.bodyBytes = await file.readAsBytes();
 
       final response = await request.send();
 
@@ -200,9 +198,11 @@ class ProfileController extends GetxController{
 
       if (response.statusCode == 200) {
 
-        profileImageURL.value = key.value;
-        profileImage.value = key.value;
+        profileImageURL.value = signedURL.split('?').first;
+        profileImage.value = signedURL.split('?').first;
+
         if (kDebugMode) {
+          print('IMAGE URL : ${profileImageURL.value}');
           print("Profile Image Uploaded Successfully!");
         }
       } else {

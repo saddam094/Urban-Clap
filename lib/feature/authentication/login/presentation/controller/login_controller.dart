@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:urban_clap/feature/authentication/document_verification/presentation/view/document_verification_screen.dart';
 import 'package:urban_clap/feature/authentication/login/data/repository/login_repository.dart';
 import 'package:urban_clap/feature/authentication/login/presentation/view/otp_screen.dart';
+import 'package:urban_clap/feature/authentication/set_profile/presentation/view/set_profile_screen.dart';
 import 'package:urban_clap/feature/dashboard/presentation/view/dashboard_screen.dart';
 import 'package:urban_clap/res/preferences/user_preferences.dart';
 import 'package:urban_clap/res/utils/utils.dart';
@@ -93,8 +94,10 @@ class LoginController extends GetxController {
 
           Utils.toastMessageTop('OTP Verified Successfully');
 
+          usePreferences.setPhone(phone);
+
           if(response['body-json']['new_user']){
-            Get.offAll(() => DocumentVerificationScreen());
+            Get.to(() => const SetProfileScreen());
           }else{
             Get.offAll(() => DashboardScreen());
           }

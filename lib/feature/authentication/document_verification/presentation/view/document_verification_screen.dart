@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:urban_clap/feature/authentication/document_verification/presentation/controller/document_verification_controller.dart';
-import 'package:urban_clap/feature/authentication/set_profile/presentation/view/set_profile_screen.dart';
 import 'package:urban_clap/feature/authentication/skill_test/presentation/view/skill_test_screen.dart';
+import 'package:urban_clap/feature/dashboard/presentation/view/dashboard_screen.dart';
 import 'package:urban_clap/res/color/app_color.dart';
 import 'package:urban_clap/res/common/common_button.dart';
 import 'package:urban_clap/res/common/custom_app_bar.dart';
@@ -244,7 +244,7 @@ class _DocumentVerificationScreenState extends State<DocumentVerificationScreen>
                   /// Submit Final Review ---> Button
                   CommonButton(
                     onTap: () {
-                      Get.to(() => SetProfileScreen());
+                      Get.offAll(() => DashboardScreen());
                     },
                     title: 'Submit Final Review',
                     height: Constant.height * .055,

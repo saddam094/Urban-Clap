@@ -1,11 +1,10 @@
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:urban_clap/feature/authentication/document_verification/presentation/view/document_verification_screen.dart';
 import 'package:urban_clap/feature/authentication/set_profile/data/repository/profile_setup_repository.dart';
-import 'package:urban_clap/feature/dashboard/presentation/view/dashboard_screen.dart';
 import 'package:urban_clap/res/preferences/user_preferences.dart';
 import 'package:urban_clap/res/utils/utils.dart';
 import 'package:http/http.dart' as http;
@@ -49,15 +48,17 @@ class SetProfileController extends GetxController {
 
     isLoading.value = true;
 
-    await uploadImageToS3();
+    await uploadImageToS3(selectedImage.value!);
 
     if(profileImageURL.value == '' || signedURL.value == ''){
       isLoading.value = false;
       return;
     }
 
+    String? phone = await userPreferences.getPhone();
+
     Map<String, dynamic> data = {
-      "phone": "6202548771",
+      "phone": phone,
       "name": nameController.value.text,
       "location": locationController.value.text,
       "skills": selectedSkills,
@@ -77,7 +78,7 @@ class SetProfileController extends GetxController {
         if(response['body-json']['statusCode'] == 200){
 
           Utils.toastMessageTop('Profile Updated Successfully');
-          Get.offAll(() => DashboardScreen());
+          Get.offAll(() => DocumentVerificationScreen());
 
         } else if(response['body-json']['statusCode'] == 400 || response['body-json']['statusCode'] == 401){
           Utils.toastMessageTop('400 || 401');
@@ -103,87 +104,72 @@ class SetProfileController extends GetxController {
 
   }
 
-  Future<void> getPresigned() async{
-
+  Future<String?> getPresigned(String fileName) async {
     Map<String, dynamic> data = {
-      "fileName": selectedImageName.value
+      "fileName": fileName
     };
 
-    _api.getPresignedApi(data).then((response) {
+    final response = await _api.getPresignedApi(data);
 
-      if(kDebugMode){
-        print('Response : $response');
-      }
+    if (kDebugMode) {
+      print('Response : $response');
+    }
 
-      try{
-
-        if(response['body-json']['statusCode'] == 200){
-
-          signedURL.value = response['body-json']['body']['uploadDetails'][0]['signedUrl'];
-          key.value = response['body-json']['body']['uploadDetails'][0]['key'];
-
-          if(kDebugMode){
-            print('Signed URL Fetch Successfully');
-          }
-
-        } else if(response['body-json']['statusCode'] == 400 || response['body-json']['statusCode'] == 401){
-          if(kDebugMode){
-            print('statusCode : 400 || 401');
-          }
-        } else{
-          if(kDebugMode){
-            print(response.toString());
-          }
+    try {
+      if (response['body-json']['statusCode'] == 200) {
+        if (kDebugMode) {
+          print('Signed URL Fetch Successfully');
         }
-
-      } catch(e){
-        if(kDebugMode){
-          print(e.toString());
+        return response['body-json']['body']['uploadDetails'][0]['signedUrl'];
+      } else {
+        if (kDebugMode) {
+          print("Failed: ${response['body-json']['statusCode']}");
         }
       }
-
-    }).onError((error, stackTrace) {
-      isLoading.value = false;
-      if(kDebugMode){
-        print(error.toString());
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
       }
-    });
+    }
+
+    return null;
   }
 
-  Future<void> uploadImageToS3() async {
+  Future<void> uploadImageToS3(File file) async {
 
-    await getPresigned();
+    String? preSignedUrl = await getPresigned(selectedImageName.value);
 
-    if(signedURL.value == '' || key.value == ''){
+    if(preSignedUrl == null){
       if (kDebugMode) {
         print('signed url not fetched');
       }
       return;
     }
 
+    signedURL.value = preSignedUrl;
+
     try {
       final request = http.Request('PUT', Uri.parse(signedURL.value));
-      request.bodyBytes =
-      await selectedImage.value!.readAsBytes();
+
+      request.bodyBytes = await file.readAsBytes();
 
       final response = await request.send();
 
-      final responseStatusCode = response.statusCode;
-
       if (kDebugMode) {
-        print('StatusCode = $responseStatusCode');
+        print('S3 Response = ${response.statusCode}');
       }
 
       if (response.statusCode == 200) {
-        profileImageURL.value = key.value;
+
+        profileImageURL.value = signedURL.split('?').first;
+
         if (kDebugMode) {
-          print("Profile Image Uploaded Successfully!");
+          print('IMAGE URL : ${profileImageURL.value}');
+          print("Profile Image Uploaded Successfully!  ==========================================");
         }
       } else {
         if (kDebugMode) {
           print("Failed to upload Profile Image : ${response.statusCode}");
-        }
-        if (kDebugMode) {
           print('Response: ${response.reasonPhrase}');
         }
       }

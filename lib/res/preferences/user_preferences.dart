@@ -32,6 +32,16 @@ class UserPreference {
     return prefs.getString("userName");
   }
 
+  Future<void> setPhone(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("phone", value);
+  }
+
+  Future<String?> getPhone() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString("phone");
+  }
+
   void clearPreferences() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.clear();

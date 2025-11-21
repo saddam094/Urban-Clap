@@ -1,5 +1,5 @@
-import 'package:urban_clap/core/network/network_api_services.dart';
-import 'package:urban_clap/res/url/consturl.dart';
+import 'package:urban_clap_vendor/core/network/network_api_services.dart';
+import 'package:urban_clap_vendor/res/url/consturl.dart';
 
 class ProfileSetupRepository {
   final _apiServices = NetworkApiServices();
@@ -14,5 +14,14 @@ class ProfileSetupRepository {
     return response;
   }
 
+  Future<dynamic> fetchCategoryApi(){
+    final response = _apiServices.getApi(ConstUrl.allCategory);
+    return response;
+  }
+
+  Future<dynamic> fetchSkillApi(String category){
+    final response = _apiServices.getApi('${ConstUrl.getParticularCategorySkill}?category=$category');
+    return response;
+  }
 
 }

@@ -1,5 +1,5 @@
-import 'package:urban_clap/core/network/network_api_services.dart';
-import 'package:urban_clap/res/url/consturl.dart';
+import 'package:urban_clap_vendor/core/network/network_api_services.dart';
+import 'package:urban_clap_vendor/res/url/consturl.dart';
 
 class LoginRepository {
   final _apiServices = NetworkApiServices();

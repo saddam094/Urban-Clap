@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:urban_clap/feature/payment_method/presentation/controller/payment_method_controller.dart';
-import 'package:urban_clap/res/color/app_color.dart';
-import 'package:urban_clap/res/common/common_button.dart';
-import 'package:urban_clap/res/common/common_text_field.dart';
-import 'package:urban_clap/res/common/custom_app_bar.dart';
-import 'package:urban_clap/res/constant/constant_data.dart';
+import 'package:urban_clap_vendor/feature/payment_method/presentation/controller/payment_method_controller.dart';
+import 'package:urban_clap_vendor/res/color/app_color.dart';
+import 'package:urban_clap_vendor/res/common/common_button.dart';
+import 'package:urban_clap_vendor/res/common/common_text_field.dart';
+import 'package:urban_clap_vendor/res/common/custom_app_bar.dart';
+import 'package:urban_clap_vendor/res/constant/constant_data.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
   final bool isBank;

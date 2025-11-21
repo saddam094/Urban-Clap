@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:urban_clap/res/common/common_text.dart';
-import 'package:urban_clap/res/fontstyle/const_text_style.dart';
+import 'package:urban_clap_vendor/res/common/common_text.dart';
+import 'package:urban_clap_vendor/res/fontstyle/const_text_style.dart';
 
 class NavigatorButton extends StatelessWidget {
   const NavigatorButton({

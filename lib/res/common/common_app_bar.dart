@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:urban_clap/res/color/app_color.dart';
-import 'package:urban_clap/res/common/common_text.dart';
+import 'package:urban_clap_vendor/res/color/app_color.dart';
+import 'package:urban_clap_vendor/res/common/common_text.dart';
 
 import '../utils/const_font_style.dart';
 

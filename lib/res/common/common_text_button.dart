@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:urban_clap/res/color/app_color.dart';
+import 'package:urban_clap_vendor/res/color/app_color.dart';
 
 
 class CommonTextButton extends StatelessWidget {

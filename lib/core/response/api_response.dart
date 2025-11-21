@@ -1,6 +1,6 @@
 
 
-import 'package:urban_clap/core/response/status.dart';
+import 'package:urban_clap_vendor/core/response/status.dart';
 
 class ApiResponse<T> {
 

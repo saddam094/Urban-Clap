@@ -1,6 +1,6 @@
 class ProfileModel {
   final bool isAvailable;
-  final String loginOtp;
+  final String? loginOtp;
   final String location;
   final String createdAt;
   final bool accountVerified;
@@ -13,12 +13,12 @@ class ProfileModel {
   final String role;
   final String lastAvailable;
   final List<String> skills;
-  final String pk;
+  final int pk; // fixed: int instead of String
   final String phone;
 
   ProfileModel({
     required this.isAvailable,
-    required this.loginOtp,
+    this.loginOtp,
     required this.location,
     required this.createdAt,
     required this.accountVerified,
@@ -37,22 +37,22 @@ class ProfileModel {
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
     return ProfileModel(
-      isAvailable: json['isavailable'],
-      loginOtp: json['login_otp'],
-      location: json['location'],
-      createdAt: json['created_at'],
-      accountVerified: json['account_verified'],
-      otp: json['otp'],
-      name: json['name'],
-      updatedAt: json['updated_at'],
-      profileImage: json['profile_image'],
-      login: json['login'],
-      tstamp: json['tstamp'],
-      role: json['role'],
-      lastAvailable: json['lastAvailable'],
-      skills: List<String>.from(json['skills']),
-      pk: json['pk'],
-      phone: json['phone'],
+      isAvailable: json['isavailable'] ?? false,
+      loginOtp: json['login_otp'], // might be null
+      location: json['location'] ?? '',
+      createdAt: json['created_at'] ?? '',
+      accountVerified: json['account_verified'] ?? false,
+      otp: json['otp'] ?? '',
+      name: json['name'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
+      profileImage: json['profile_image'] ?? '',
+      login: json['login'] ?? '',
+      tstamp: json['tstamp'] ?? 0,
+      role: json['role'] ?? '',
+      lastAvailable: json['lastAvailable']?.toString() ?? 'N/A', // safe
+      skills: List<String>.from(json['skills'] ?? []),
+      pk: json['pk'] is int ? json['pk'] : int.tryParse(json['pk'].toString()) ?? 0,
+      phone: json['phone']?.toString() ?? '',
     );
   }
 

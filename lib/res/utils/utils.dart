@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:urban_clap/res/color/app_color.dart';
+import 'package:urban_clap_vendor/res/color/app_color.dart';
 import '../fontstyle/const_text_style.dart';
 
 class Utils {

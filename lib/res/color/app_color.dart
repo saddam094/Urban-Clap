@@ -11,6 +11,7 @@ class AppColors {
   static const Color primaryYellowColor = Color(0xff00399C);
   static const Color primaryGreyColor = Color(0xffDDDDDD);
 
+  static const Color lightColor1 = Color(0xffDBECFF);
 
   /// Theme Color
   static const Color brownColor = Color(0xff997C70);

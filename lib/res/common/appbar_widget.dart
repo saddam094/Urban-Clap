@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:urban_clap/res/color/app_color.dart';
-import 'package:urban_clap/res/common/button_widget.dart';
+import 'package:urban_clap_vendor/res/color/app_color.dart';
+import 'package:urban_clap_vendor/res/common/button_widget.dart';
 
 
 

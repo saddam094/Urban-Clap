@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:urban_clap/feature/authentication/skill_test/presentation/controller/skill_test_controller.dart';
-import 'package:urban_clap/feature/authentication/skill_test/presentation/view/review_screen.dart';
-import 'package:urban_clap/res/color/app_color.dart';
-import 'package:urban_clap/res/common/common_button.dart';
-import 'package:urban_clap/res/common/custom_app_bar.dart';
-import 'package:urban_clap/res/constant/constant_data.dart';
-import 'package:urban_clap/res/utils/utils.dart';
+import 'package:urban_clap_vendor/feature/authentication/skill_test/presentation/controller/skill_test_controller.dart';
+import 'package:urban_clap_vendor/feature/authentication/skill_test/presentation/view/review_screen.dart';
+import 'package:urban_clap_vendor/res/color/app_color.dart';
+import 'package:urban_clap_vendor/res/common/common_button.dart';
+import 'package:urban_clap_vendor/res/common/custom_app_bar.dart';
+import 'package:urban_clap_vendor/res/constant/constant_data.dart';
+import 'package:urban_clap_vendor/res/utils/utils.dart';
 
 class SkillTestScreen extends StatefulWidget {
   const SkillTestScreen({super.key});

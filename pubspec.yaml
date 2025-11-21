@@ -1,4 +1,4 @@
-name: urban_clap
+name: urban_clap_vendor
 description: "A new Flutter project."
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -23,11 +23,14 @@ dependencies:
   google_fonts: ^6.2.1
   fluttertoast: ^8.2.12
   jwt_decoder: ^2.0.1
-  geolocator: ^10.1.0
   pinput: ^5.0.1
   qr_flutter: ^4.1.0
   flutter_rating_bar: ^4.0.1
   image_picker: ^1.2.0
+  google_maps_flutter: ^2.12.0
+  geocoding: ^4.0.0
+  geolocator: ^13.0.1
+  url_launcher: ^6.3.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

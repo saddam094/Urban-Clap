@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:urban_clap/feature/money_transfer/presentation/controller/money_transfer_controller.dart';
-import 'package:urban_clap/feature/payment_method/presentation/view/payment_method_screen.dart';
-import 'package:urban_clap/res/color/app_color.dart';
-import 'package:urban_clap/res/common/common_button.dart';
-import 'package:urban_clap/res/common/custom_app_bar.dart';
-import 'package:urban_clap/res/constant/constant_data.dart';
+import 'package:urban_clap_vendor/feature/money_transfer/presentation/controller/money_transfer_controller.dart';
+import 'package:urban_clap_vendor/feature/payment_method/presentation/view/payment_method_screen.dart';
+import 'package:urban_clap_vendor/res/color/app_color.dart';
+import 'package:urban_clap_vendor/res/common/common_button.dart';
+import 'package:urban_clap_vendor/res/common/custom_app_bar.dart';
+import 'package:urban_clap_vendor/res/constant/constant_data.dart';
 
 class MoneyTransferScreen extends StatefulWidget {
   const MoneyTransferScreen({super.key});

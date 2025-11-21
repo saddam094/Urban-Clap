@@ -3,11 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:urban_clap/core/response/status.dart';
-import 'package:urban_clap/feature/profile/data/model/profile_model.dart';
-import 'package:urban_clap/feature/profile/data/repository/profile_repository.dart';
-import 'package:urban_clap/res/preferences/user_preferences.dart';
-import 'package:urban_clap/res/utils/utils.dart';
+import 'package:urban_clap_vendor/core/response/status.dart';
+import 'package:urban_clap_vendor/feature/profile/data/model/document_model.dart';
+import 'package:urban_clap_vendor/feature/profile/data/model/profile_model.dart';
+import 'package:urban_clap_vendor/feature/profile/data/repository/profile_repository.dart';
+import 'package:urban_clap_vendor/res/preferences/user_preferences.dart';
+import 'package:urban_clap_vendor/res/utils/utils.dart';
 import 'package:http/http.dart' as http;
 
 class ProfileController extends GetxController{
@@ -17,6 +18,9 @@ class ProfileController extends GetxController{
 
   final rxUserProfileModel = Rxn<ProfileModel>();
   final rxRequestStatusUserProfile = Status.LOADING.obs;
+
+  final rxDocumentModel = Rxn<DocumentModel>();
+  final rxRequestStatusDocument = Status.LOADING.obs;
 
   final nameController = TextEditingController().obs;
   final phoneController = TextEditingController().obs;
@@ -29,10 +33,23 @@ class ProfileController extends GetxController{
   RxString selectedImageName = ''.obs;
   Rx<File?> selectedImage = Rx<File?>(null);
 
+  RxBool isProfile = true.obs;
   RxBool loading = false.obs;
+  RxBool loadingCancelSkillTest = false.obs;
+
+  Map<String, RxString> detail = {
+    'testCenter': 'Tech Park Building, Noida'.obs,
+    'date': '10 Sep 2025'.obs,
+    'time': '11 AM - 12 AM'.obs,
+    'status': 'Pending'.obs,
+    'message': '(We`ll notify you once it`s verified by our team)'.obs
+  };
 
   void setRxUserProfileModel(ProfileModel value) => rxUserProfileModel.value = value;
   void setRxRequestStatusUserProfile(Status value) => rxRequestStatusUserProfile.value = value;
+
+  void setRxDocumentModel(DocumentModel value) => rxDocumentModel.value = value;
+  void setRxRequestStatusDocument(Status value) => rxRequestStatusDocument.value = value;
 
   Future<void> pickImage() async {
     final ImagePicker picker = ImagePicker();
@@ -43,11 +60,12 @@ class ProfileController extends GetxController{
     }
   }
 
+  /// Fetch Vendor Profile Detail
   void venderProfile()async{
 
     String? phone = await preferences.getPhone();
 
-    _api.userProfileApi(phone!).then((response) {
+    _api.vendorProfileApi(phone!).then((response) {
 
       if(kDebugMode){
         print('Response : $response');
@@ -87,6 +105,44 @@ class ProfileController extends GetxController{
 
   }
 
+  /// Fetch Vendor Document
+  void venderDocument()async{
+
+    String? phone = await preferences.getPhone();
+
+    _api.vendorDocumentApi(phone!).then((response) {
+
+      if(kDebugMode){
+        print('Response : $response');
+      }
+
+      try{
+
+        DocumentModel documentModel = DocumentModel.fromJson(response['body-json']['body']);
+        setRxDocumentModel(documentModel);
+        setRxRequestStatusDocument(Status.COMPLETED);
+
+        if(kDebugMode){
+          print('Vendor Document Data Set Successfully');
+        }
+
+      }catch(e){
+        setRxRequestStatusDocument(Status.ERROR);
+        if(kDebugMode){
+          print('Error While Set Vendor Document Data : $e');
+        }
+      }
+
+    }).onError((error, stackTrace) {
+      setRxRequestStatusDocument(Status.ERROR);
+      if(kDebugMode){
+        print('Error While Fetching Vendor Document Data : $error');
+      }
+    });
+
+  }
+
+  /// Edit Profile Detail
   void editProfile() async {
     loading.value = true;
 
@@ -136,6 +192,48 @@ class ProfileController extends GetxController{
       setRxRequestStatusUserProfile(Status.ERROR);
       if (kDebugMode) {
         print('Error While Fetching User Profile Data : $error');
+      }
+    });
+  }
+
+  /// Cancel Skill Test Schedule
+  void cancelSkillTest() async {
+    loadingCancelSkillTest.value = true;
+
+    String? phone = await preferences.getPhone();
+
+    Map<String, dynamic> data = {
+      'phone': phone,
+      'skill_test': "cancel"
+    };
+
+    _api.cancelSkillTestApi(data).then((response) {
+      loadingCancelSkillTest.value = false;
+
+      if (kDebugMode) {
+        print('Response : $response');
+      }
+
+      try {
+        if (response['body-json']['statusCode'] == 200) {
+          Utils.toastMessageTop('Skill Test Canceled Successfully');
+        } else if (response['body-json']['statusCode'] == 400 || response['body-json']['statusCode'] == 404) {
+          Utils.toastMessageTop(response['body-json']['body']);
+        } else {
+          if (kDebugMode) {
+            print("Unexpected response: $response");
+          }
+        }
+      } catch (e) {
+
+        if (kDebugMode) {
+          print('Exception Cancel Skill Test Data : $e');
+        }
+      }
+    }).onError((error, stackTrace) {
+      loadingCancelSkillTest.value = false;
+      if (kDebugMode) {
+        print('Error While Cancelling Skill Test : $error');
       }
     });
   }

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
-import 'package:urban_clap/feature/dashboard/presentation/view/dashboard_screen.dart';
-import 'package:urban_clap/feature/feedback/presentation/controller/feedback_controller.dart';
-import 'package:urban_clap/res/color/app_color.dart';
-import 'package:urban_clap/res/common/common_button.dart';
-import 'package:urban_clap/res/common/custom_app_bar.dart';
-import 'package:urban_clap/res/constant/constant_data.dart';
+import 'package:urban_clap_vendor/feature/dashboard/presentation/view/dashboard_screen.dart';
+import 'package:urban_clap_vendor/feature/feedback/presentation/controller/feedback_controller.dart';
+import 'package:urban_clap_vendor/res/color/app_color.dart';
+import 'package:urban_clap_vendor/res/common/common_button.dart';
+import 'package:urban_clap_vendor/res/common/custom_app_bar.dart';
+import 'package:urban_clap_vendor/res/constant/constant_data.dart';
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({super.key});

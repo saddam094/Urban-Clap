@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:urban_clap/res/color/app_color.dart';
-import 'package:urban_clap/res/constant/constant_data.dart';
+import 'package:urban_clap_vendor/res/color/app_color.dart';
+import 'package:urban_clap_vendor/res/constant/constant_data.dart';
 
 class CustomAppBar extends StatelessWidget {
   final String title;
@@ -26,15 +26,15 @@ class CustomAppBar extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.gradient2,
-            AppColors.gradient1
+            AppColors.dashboardGradiant1,
+            AppColors.dashboardGradiant2
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.gradient1,
+            color: AppColors.dashboardGradiant2,
             spreadRadius: Constant.width * .05,
             blurRadius: Constant.width * .05,
           )

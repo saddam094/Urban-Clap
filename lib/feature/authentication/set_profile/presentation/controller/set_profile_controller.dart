@@ -3,16 +3,25 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:urban_clap/feature/authentication/document_verification/presentation/view/document_verification_screen.dart';
-import 'package:urban_clap/feature/authentication/set_profile/data/repository/profile_setup_repository.dart';
-import 'package:urban_clap/res/preferences/user_preferences.dart';
-import 'package:urban_clap/res/utils/utils.dart';
+import 'package:urban_clap_vendor/core/response/status.dart';
+import 'package:urban_clap_vendor/feature/authentication/document_verification/presentation/view/document_verification_screen.dart';
+import 'package:urban_clap_vendor/feature/authentication/set_profile/data/model/category_model.dart';
+import 'package:urban_clap_vendor/feature/authentication/set_profile/data/model/skills_model.dart';
+import 'package:urban_clap_vendor/feature/authentication/set_profile/data/repository/profile_setup_repository.dart';
+import 'package:urban_clap_vendor/res/preferences/user_preferences.dart';
+import 'package:urban_clap_vendor/res/utils/utils.dart';
 import 'package:http/http.dart' as http;
 
 class SetProfileController extends GetxController {
 
   final _api = ProfileSetupRepository();
   final userPreferences = UserPreference();
+
+  final rxCategoryModel = Rxn<CategoryModel>();
+  final rxRequestStatusCategory = Status.LOADING.obs;
+
+  final rxSkillModel = Rxn<SkillsModel>();
+  final rxRequestStatusSkills = Status.LOADING.obs;
 
   final nameController = TextEditingController().obs;
   final locationController = TextEditingController().obs;
@@ -23,15 +32,50 @@ class SetProfileController extends GetxController {
   RxString selectedImageName = ''.obs;
   Rx<File?> selectedImage = Rx<File?>(null);
 
+  RxDouble longitude = 0.0.obs;
+  RxDouble latitude = 0.0.obs;
+
   final isLoading = false.obs;
 
-  List<String> allSkills = ['Plumber', 'Electrician', 'Cleaning', 'Ac Repair'];
+  final isToggle = false.obs;
+  RxInt selectedIndex = 10000.obs;
+
+  final selectedMainSkill = ''.obs;
+  final selectedSubSkills = <String>[].obs;
+
+  void setRxCategoryModel(CategoryModel value) => rxCategoryModel.value = value;
+  void setRxRequestStatusCategory(Status value) => rxRequestStatusCategory.value = value;
+
+  void setRxSkillModel(SkillsModel value) => rxSkillModel.value = value;
+  void setRxRequestStatusSkill(Status value) => rxRequestStatusSkills.value = value;
+
+  void selectMainSkill(String skill) {
+    if (selectedMainSkill.value == skill) {
+      // Unselect if already selected
+      selectedMainSkill.value = '';
+      selectedSubSkills.clear();
+    } else {
+      selectedMainSkill.value = skill;
+      selectedSubSkills.clear();
+    }
+  }
+
+  void toggleSubSkill(String subSkill) {
+    if (selectedSubSkills.contains(subSkill)) {
+      selectedSubSkills.remove(subSkill);
+    } else {
+      selectedSubSkills.add(subSkill);
+    }
+  }
+
 
   void toggleSkill(String skill) {
     if (selectedSkills.contains(skill)) {
       selectedSkills.remove(skill);
     } else {
-      selectedSkills.add(skill);
+      if(selectedSkills.isEmpty){
+        selectedSkills.add(skill);
+      }
     }
   }
 
@@ -44,6 +88,7 @@ class SetProfileController extends GetxController {
     }
   }
 
+  /// Set Profile Details
   void setProfile() async{
 
     isLoading.value = true;
@@ -61,7 +106,12 @@ class SetProfileController extends GetxController {
       "phone": phone,
       "name": nameController.value.text,
       "location": locationController.value.text,
-      "skills": selectedSkills,
+      "landmark": {
+        "longitude": longitude.value,
+        "latitude": latitude.value
+      },
+      "category": [selectedMainSkill.value],
+      "skills": selectedSubSkills,
       "profile_image": profileImageURL.value
     };
 
@@ -99,6 +149,80 @@ class SetProfileController extends GetxController {
       isLoading.value = false;
       if(kDebugMode){
         print(error.toString());
+      }
+    });
+
+  }
+
+  /// Fetch Category
+  void fetchCategory() async{
+
+    _api.fetchCategoryApi().then((response) {
+
+      if(kDebugMode){
+        print('Response : $response');
+      }
+
+      try{
+
+        CategoryModel categoryModel = CategoryModel.fromJson(response['body-json']['body']);
+        setRxCategoryModel(categoryModel);
+        setRxRequestStatusCategory(Status.COMPLETED);
+
+        if(kDebugMode){
+          print('Category Data Fetched Successfully');
+        }
+
+      } catch(e){
+
+        setRxRequestStatusCategory(Status.ERROR);
+        if(kDebugMode){
+          print('Error While Set Category Data : $e');
+        }
+      }
+
+    }).onError((error, stackTrace) {
+      setRxRequestStatusCategory(Status.ERROR);
+      if(kDebugMode){
+        print('Error While Fetching Category Data : $error');
+      }
+    });
+
+  }
+
+  /// Fetch Skill
+  void fetchSkill(String category) async{
+
+    setRxRequestStatusSkill(Status.LOADING);
+
+    _api.fetchSkillApi(category).then((response) {
+
+      if(kDebugMode){
+        print('Response : $response');
+      }
+
+      try{
+
+        SkillsModel skillsModel = SkillsModel.fromJson(response['body-json']['body']);
+        setRxSkillModel(skillsModel);
+        setRxRequestStatusSkill(Status.COMPLETED);
+
+        if(kDebugMode){
+          print('Skill Data Set Successfully');
+        }
+
+      } catch(e){
+
+        setRxRequestStatusSkill(Status.ERROR);
+        if(kDebugMode){
+          print('Error While Set Skill Data : $e');
+        }
+      }
+
+    }).onError((error, stackTrace) {
+      setRxRequestStatusSkill(Status.ERROR);
+      if(kDebugMode){
+        print('Error While Fetching Skill Data : $error');
       }
     });
 

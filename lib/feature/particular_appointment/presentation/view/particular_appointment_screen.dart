@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pinput/pinput.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:urban_clap/feature/particular_appointment/presentation/controller/particular_appointment_controller.dart';
-import 'package:urban_clap/feature/service_completed/presentation/view/service_completed_screen.dart';
-import 'package:urban_clap/res/color/app_color.dart';
-import 'package:urban_clap/res/common/common_button.dart';
-import 'package:urban_clap/res/common/custom_app_bar.dart';
-import 'package:urban_clap/res/constant/constant_data.dart';
+import 'package:urban_clap_vendor/core/response/status.dart';
+import 'package:urban_clap_vendor/feature/particular_appointment/presentation/controller/particular_appointment_controller.dart';
+import 'package:urban_clap_vendor/feature/service_completed/presentation/view/service_completed_screen.dart';
+import 'package:urban_clap_vendor/res/color/app_color.dart';
+import 'package:urban_clap_vendor/res/common/common_button.dart';
+import 'package:urban_clap_vendor/res/common/custom_app_bar.dart';
+import 'package:urban_clap_vendor/res/constant/constant_data.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class ParticularAppointmentScreen extends StatefulWidget {
-  const ParticularAppointmentScreen({super.key});
+  final String appointmentId;
+  const ParticularAppointmentScreen({super.key, required this.appointmentId});
 
   @override
   State<ParticularAppointmentScreen> createState() =>
@@ -22,153 +26,175 @@ class _ParticularAppointmentScreenState
   final particularAppointmentVM = Get.put(ParticularAppointmentController());
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    particularAppointmentVM.getParticularAppointment(widget.appointmentId);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      body: Column(
-        children: [
-          /// Heading Container
-          CustomAppBar(
-              title: '', isBack: true, onBack: () => Navigator.pop(context)),
-
-          /// Main Content
-          SizedBox(
-            height: Constant.height * .87,
-            width: Constant.width * 1,
-            child: SingleChildScrollView(
-              padding: EdgeInsets.only(
-                left: Constant.width * .03,
-                right: Constant.width * .03,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  /// Appointment Details
-                  appointmentDetailsCard(
-                      'Electrician Services Package',
-                      'DSAFDS23432',
-                      'Abhishek Thakur',
-                      '6:30 PM - 10 PM',
-                      '6202548771'),
-
-                  SizedBox(height: Constant.height * .01),
-
-                  Text('Location',
-                      style: TextStyle(
-                          fontSize: Constant.width * .04,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.black)),
-
-                  SizedBox(height: Constant.height * .01),
-
-                  /// Location Details Card
-                  locationCard('34', 'Race Course Road', 'Old Parade Road'),
-
-                  SizedBox(height: Constant.height * .01),
-
-                  Text('Tasks',
-                      style: TextStyle(
-                          fontSize: Constant.width * .04,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.black)),
-
-                  SizedBox(height: Constant.height * .01),
-
-                  /// Task List Container
-                  Obx(
-                    () {
-                      return Container(
-                        height: Constant.height *
-                                .08 *
-                                particularAppointmentVM.taskList.length +
-                            Constant.height * .01,
-                        width: Constant.width * 1,
-                        padding: EdgeInsets.only(
-                          left: Constant.width * .03,
-                          right: Constant.width * .03,
-                        ),
-                        decoration: BoxDecoration(
-                            color: AppColors.white,
-                            borderRadius:
-                                BorderRadius.circular(Constant.width * .03),
-                            border: Border.all(color: AppColors.gradient2)),
-                        child: ListView.builder(
-                          itemCount: particularAppointmentVM.taskList.length,
-                          physics: const NeverScrollableScrollPhysics(),
-                          padding: EdgeInsets.only(top: Constant.height * .01),
-                          itemBuilder: (context, index) {
-                            var data = particularAppointmentVM.taskList[index];
-                            return particularAppointmentVM
-                                    .isServiceStarted.value
-                                ? taskCardStarted(index + 1, data['title'],
-                                    data['description'], data['isChecked'])
-                                : taskCardNotStarted(index + 1, data['title'],
-                                    data['description']);
-                          },
-                        ),
-                      );
-                    },
-                  ),
-
-                  SizedBox(height: Constant.height * .01),
-
-                  Text('Price Details',
-                      style: TextStyle(
-                          fontSize: Constant.width * .04,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.black)),
-
-                  SizedBox(height: Constant.height * .01),
-
-                  /// Price Details
-                  priceDetailsCard(200, 15),
-
-                  SizedBox(height: Constant.height * .01),
-
-                  SizedBox(height: Constant.height * .02),
-
-                  CommonButton(
-                    onTap: () {
-                      if (particularAppointmentVM.isServiceStarted.value) {
-
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(top: Radius.circular(Constant.width * .1)),
-                          ),
-                          builder: (context) {
-                            return paymentBottomSheet();
-                          },
-                        );
-
-                      } else {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(top: Radius.circular(Constant.width * .1)),
-                          ),
-                          builder: (context) {
-                            particularAppointmentVM.startTimer();
-                            return otpBottomSheet();
-                          },
-                        );
-                      }
-                    },
-                    title: particularAppointmentVM.isServiceStarted.value
-                        ? 'Continue'
-                        : 'Start Service',
-                    height: Constant.height * .055,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            /// Heading Container
+            CustomAppBar(
+                title: '', isBack: true, onBack: () => Navigator.pop(context)),
+        
+            /// Main Content
+            Obx(() {
+              switch (particularAppointmentVM.rxRequestStatusParticularAppointment.value) {
+                case Status.LOADING:
+                  return SizedBox(
+                    height: Constant.height * .87,
                     width: Constant.width * 1,
-                  ),
+                    child: Center(
+                      child: CircularProgressIndicator(color: AppColors.primaryColor,),
+                    ),
+                  );
 
-                  SizedBox(height: Constant.height * .06)
-                ],
-              ),
-            ),
-          )
-        ],
+                case Status.ERROR:
+                  return SizedBox(
+                    height: Constant.height * .87,
+                    width: Constant.width * 1,
+                    child: Center(
+                      child: Text('Something Went Wrong...',
+                          style: TextStyle(
+                              fontSize: Constant.width * .05,
+                              color: AppColors.redColor)),
+                    ),
+                  );
+
+                case Status.COMPLETED:
+                  var data = particularAppointmentVM.rxParticularAppointmentModel.value!.booking;
+                  return SizedBox(
+                    height: Constant.height * .87,
+                    width: Constant.width * 1,
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.only(
+                        left: Constant.width * .03,
+                        right: Constant.width * .03,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /// Appointment Details
+                          appointmentDetailsCard(
+                              data.serviceName,
+                              data.id,
+                              data.userName,
+                              data.time,
+                              data.userPhone),
+
+                          SizedBox(height: Constant.height * .01),
+
+                          Row(
+                            children: [
+                              Text('Location :- ', style: TextStyle(fontSize: Constant.width * .04, fontWeight: FontWeight.bold, color: AppColors.black)),
+                              Text(data.location, style: TextStyle(fontSize: Constant.width * .04, color: AppColors.black)),
+                            ],
+                          ),
+
+                          SizedBox(height: Constant.height * .01),
+
+                          /// Location Details Card
+                          locationCard(data.landmark.longitude, data.landmark.latitude),
+
+                          SizedBox(height: Constant.height * .01),
+
+                          Text('Notes',
+                              style: TextStyle(
+                                  fontSize: Constant.width * .04,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.black)),
+
+                          SizedBox(height: Constant.height * .01),
+
+                          /// Task List Container
+                          Container(
+                            width: Constant.width * 1,
+                            padding: EdgeInsets.only(
+                              left: Constant.width * .03,
+                              right: Constant.width * .03,
+                              top: Constant.height * .015,
+                              bottom: Constant.height * .015,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(Constant.width * .03),
+                              border: Border.all(color: AppColors.gradient2),
+                            ),
+                            child: Text(data.note, style: TextStyle(fontSize: Constant.width * .04, color: AppColors.greyTextLightColor))
+                          ),
+
+                          SizedBox(height: Constant.height * .01),
+
+                          Text('Price Details',
+                              style: TextStyle(
+                                  fontSize: Constant.width * .04,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.black)),
+
+                          SizedBox(height: Constant.height * .01),
+
+                          /// Price Details
+                          priceDetailsCard(data.totalAmount.toDouble(), 0),
+
+                          SizedBox(height: Constant.height * .01),
+
+                          SizedBox(height: Constant.height * .02),
+
+                          CommonButton(
+                            onTap: () {
+                              if (particularAppointmentVM.isServiceStarted.value) {
+
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(top: Radius.circular(Constant.width * .1)),
+                                  ),
+                                  builder: (context) {
+                                    return paymentBottomSheet();
+                                  },
+                                );
+
+                              } else {
+
+                                particularAppointmentVM.sendStartServiceOTP();
+
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(top: Radius.circular(Constant.width * .1)),
+                                  ),
+                                  builder: (context) {
+                                    particularAppointmentVM.startTimer();
+                                    return otpBottomSheet();
+                                  },
+                                );
+                              }
+                            },
+                            title: particularAppointmentVM.isServiceStarted.value
+                                ? 'Continue'
+                                : 'Start Service',
+                            height: Constant.height * .055,
+                            width: Constant.width * 1,
+                            isLoading: particularAppointmentVM.isLoading.value,
+                          ),
+
+                          SizedBox(height: Constant.height * .06)
+                        ],
+                      ),
+                    ),
+                  );
+              }
+            }),
+
+          ],
+        ),
       ),
     );
   }
@@ -232,7 +258,9 @@ class _ParticularAppointmentScreenState
             children: [
               /// Contact Button
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  launchUrlString('tel://${particularAppointmentVM.rxParticularAppointmentModel.value!.booking.userPhone}');
+                },
                 child: Container(
                   height: Constant.height * .042,
                   width: Constant.width * .3,
@@ -317,72 +345,39 @@ class _ParticularAppointmentScreenState
     );
   }
 
-  /// Location Details Card
-  Widget locationCard(String buildingNumber, streetName, streetAddress) {
+  /// Location
+  Widget locationCard(String longitude, String latitude) {
+    final double lat = double.parse(latitude);
+    final double lng = double.parse(longitude);
+    final LatLng position = LatLng(lat, lng);
+
     return Container(
       height: Constant.height * .13,
       width: Constant.width * 1,
-      padding: EdgeInsets.only(
-        left: Constant.width * .03,
-        right: Constant.width * .03,
-      ),
       decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(Constant.width * .03),
-          border: Border.all(color: AppColors.gradient2)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          SizedBox(
-            width: Constant.width * .65,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                /// Address Number
-                Text('Address 3 :',
-                    style: TextStyle(
-                        fontSize: Constant.width * .035,
-                        color: AppColors.greyTextLightColor),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
-
-                /// Building Number
-                Text('Building Number : $buildingNumber',
-                    style: TextStyle(
-                        fontSize: Constant.width * .035,
-                        color: AppColors.greyTextLightColor),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
-
-                /// Street Name
-                Text('Street Name : $streetName',
-                    style: TextStyle(
-                        fontSize: Constant.width * .035,
-                        color: AppColors.greyTextLightColor),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
-
-                /// Street
-                Text('Street Address : $streetAddress',
-                    style: TextStyle(
-                        fontSize: Constant.width * .035,
-                        color: AppColors.greyTextLightColor),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
-              ],
-            ),
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(Constant.width * .03),
+        border: Border.all(color: AppColors.gradient2),
+      ),
+      clipBehavior: Clip.antiAlias, // ensures map corners are rounded
+      child: GoogleMap(
+        initialCameraPosition: CameraPosition(
+          target: position,
+          zoom: 14.0,
+        ),
+        markers: {
+          Marker(
+            markerId: const MarkerId("selectedLocation"),
+            position: position,
           ),
-
-          /// Map
-          Container(
-            height: Constant.height * .1,
-            width: Constant.width * .22,
-            decoration: BoxDecoration(
-                color: AppColors.cardBg,
-                borderRadius: BorderRadius.circular(Constant.width * .03)),
-          )
-        ],
+        },
+        zoomControlsEnabled: false,
+        scrollGesturesEnabled: false,
+        rotateGesturesEnabled: false,
+        tiltGesturesEnabled: false,
+        liteModeEnabled: true,
+        myLocationEnabled: false,
+        onMapCreated: (GoogleMapController controller) {},
       ),
     );
   }
@@ -531,7 +526,8 @@ class _ParticularAppointmentScreenState
             return InkWell(
               onTap: particularAppointmentVM.timerSeconds.value == 0
                   ? () {
-                particularAppointmentVM.resetTimer();
+                // particularAppointmentVM.resetTimer();
+                particularAppointmentVM.resendStartServiceOTP();
               }
                   : null,
               child: Text(
@@ -552,14 +548,21 @@ class _ParticularAppointmentScreenState
 
           Spacer(),
 
-          CommonButton(
-            onTap: () {
-              particularAppointmentVM.isServiceStarted.value = true;
-              Navigator.pop(context);
-            },
-            title: 'Verify OTP',
-            height: Constant.height * .06,
-          ),
+          Obx(() {
+            return CommonButton(
+              onTap: () {
+                particularAppointmentVM.verifyStartServiceOTP();
+                Future.delayed(Duration(seconds: 3), () {
+                  Navigator.pop(context);
+                });
+
+
+              },
+              title: 'Verify OTP',
+              height: Constant.height * .06,
+              isLoading: particularAppointmentVM.isLoadingOTP.value,
+            );
+          }),
 
           SizedBox(height: Constant.height * .06)
         ],

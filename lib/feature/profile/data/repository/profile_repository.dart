@@ -1,13 +1,20 @@
-import 'package:urban_clap/core/network/network_api_services.dart';
-import 'package:urban_clap/res/url/consturl.dart';
+import 'package:urban_clap_vendor/core/network/network_api_services.dart';
+import 'package:urban_clap_vendor/res/url/consturl.dart';
 
 class ProfileRepository{
 
   final _apiServices = NetworkApiServices();
 
-  Future<dynamic> userProfileApi(String phone){
+  Future<dynamic> vendorProfileApi(String phone){
 
     final response = _apiServices.getApi(ConstUrl.profile+phone);
+    return response;
+
+  }
+
+  Future<dynamic> vendorDocumentApi(String phone){
+
+    final response = _apiServices.getApi(ConstUrl.document+phone);
     return response;
 
   }
@@ -22,6 +29,13 @@ class ProfileRepository{
   Future<dynamic> getPresignedApi(Map<String, dynamic> data){
 
     final response = _apiServices.postApi(data, ConstUrl.profileImagePresigned);
+    return response;
+
+  }
+
+  Future<dynamic> cancelSkillTestApi(Map<String, dynamic> data){
+
+    final response = _apiServices.putApi(data, ConstUrl.cancelSkillTestAppointment);
     return response;
 
   }

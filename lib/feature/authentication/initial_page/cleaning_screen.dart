@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:urban_clap/feature/authentication/login/presentation/view/login_screen.dart';
-import 'package:urban_clap/res/color/app_color.dart';
-import 'package:urban_clap/res/constant/constant_data.dart';
+import 'package:urban_clap_vendor/feature/authentication/login/presentation/view/login_screen.dart';
+import 'package:urban_clap_vendor/feature/authentication/set_profile/presentation/view/set_profile_screen.dart';
+import 'package:urban_clap_vendor/res/color/app_color.dart';
+import 'package:urban_clap_vendor/res/constant/constant_data.dart';
 
 class CleaningScreen extends StatefulWidget {
   const CleaningScreen({super.key});
@@ -89,7 +90,7 @@ class _CleaningScreenState extends State<CleaningScreen> {
                   ],
                 ),
 
-                SizedBox(height: Constant.height * .07),
+                Spacer(),
 
                 InkWell(
                   onTap: () {
@@ -106,123 +107,14 @@ class _CleaningScreenState extends State<CleaningScreen> {
                       child: Text('Get Started', style: TextStyle(fontSize: Constant.width * .04, fontWeight: FontWeight.w800, color: AppColors.primaryColor)),
                     ),
                   ),
-                )
+                ),
+
+                SizedBox(height: Constant.height * .08),
               ],
             ),
           )
         ],
       ),
-      // body: SafeArea(
-      //   child: Column(
-      //     children: [
-      //       // Image
-      //       Expanded(
-      //         flex: 6,
-      //         child: Image.asset(
-      //           'assets/images/auth_image/washing.png',
-      //           fit: BoxFit.cover,
-      //           width: double.infinity,
-      //         ),
-      //       ),
-      //       // Text content
-      //       Expanded(
-      //         flex: 4,
-      //         child: Padding(
-      //           padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      //           child: Column(
-      //             mainAxisAlignment: MainAxisAlignment.center,
-      //             children: [
-      //               const Text(
-      //                 "Clean Simple Convenient",
-      //                 textAlign: TextAlign.center,
-      //                 style: TextStyle(
-      //                   fontSize: 22,
-      //                   fontWeight: FontWeight.bold,
-      //                   color: Colors.black,
-      //                 ),
-      //               ),
-      //               const SizedBox(height: 12),
-      //               const Text(
-      //                 "Get your laundry cleaned with care\nand exception service",
-      //                 textAlign: TextAlign.center,
-      //                 style: TextStyle(
-      //                   fontSize: 16,
-      //                   color: Colors.grey,
-      //                 ),
-      //               ),
-      //               const SizedBox(height: 20),
-      //               // Progress indicator
-      //               Row(
-      //                 mainAxisAlignment: MainAxisAlignment.center,
-      //                 children: [
-      //                   Container(
-      //                     height: 4,
-      //                     width: 30,
-      //                     decoration: BoxDecoration(
-      //                       color: Colors.blue,
-      //                       borderRadius: BorderRadius.circular(10),
-      //                     ),
-      //                   ),
-      //                   const SizedBox(width: 6),
-      //                   Container(
-      //                     height: 4,
-      //                     width: 8,
-      //                     decoration: BoxDecoration(
-      //                       color: Colors.grey.shade300,
-      //                       borderRadius: BorderRadius.circular(10),
-      //                     ),
-      //                   ),
-      //                   const SizedBox(width: 6),
-      //                   Container(
-      //                     height: 4,
-      //                     width: 8,
-      //                     decoration: BoxDecoration(
-      //                       color: Colors.grey.shade300,
-      //                       borderRadius: BorderRadius.circular(10),
-      //                     ),
-      //                   ),
-      //                 ],
-      //               ),
-      //               const SizedBox(height: 30),
-      //               // Buttons
-      //               Row(
-      //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                 children: [
-      //                   TextButton(
-      //                     onPressed: () {
-      //                       // Skip logic
-      //                     },
-      //                     child: const Text(
-      //                       'Skip',
-      //                       style: TextStyle(color: Colors.blue, fontSize: 16),
-      //                     ),
-      //                   ),
-      //                   ElevatedButton(
-      //                     onPressed: () {
-      //                       // Next screen logic
-      //                     },
-      //                     style: ElevatedButton.styleFrom(
-      //                       backgroundColor: Colors.blue.shade100,
-      //                       foregroundColor: Colors.blue,
-      //                       shape: RoundedRectangleBorder(
-      //                         borderRadius: BorderRadius.circular(20),
-      //                       ),
-      //                       padding: const EdgeInsets.symmetric(
-      //                         vertical: 10,
-      //                         horizontal: 24,
-      //                       ),
-      //                     ),
-      //                     child: const Text('Next'),
-      //                   ),
-      //                 ],
-      //               )
-      //             ],
-      //           ),
-      //         ),
-      //       )
-      //     ],
-      //   ),
-      // ),
     );
   }
 }

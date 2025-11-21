@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:urban_clap/feature/authentication/initial_page/laundry_screen.dart';
-import 'package:urban_clap/feature/dashboard/presentation/view/dashboard_screen.dart';
+import 'package:urban_clap_vendor/feature/authentication/initial_page/laundry_screen.dart';
+import 'package:urban_clap_vendor/feature/dashboard/presentation/view/dashboard_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Navigate extends StatefulWidget {
@@ -36,10 +36,8 @@ class _NavigateState extends State<Navigate> {
 
       return Get.offAll(() => const DashboardScreen());
 
-
     } else {
 
-      // return Get.offAll(() => const LoginScreen());
       return Get.offAll(() => const LaundryScreen());
 
     }

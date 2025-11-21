@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
-import 'package:urban_clap/feature/authentication/login/presentation/controller/login_controller.dart';
-import 'package:urban_clap/res/color/app_color.dart';
-import 'package:urban_clap/res/common/common_button.dart';
-import 'package:urban_clap/res/common/custom_app_bar.dart';
-import 'package:urban_clap/res/constant/constant_data.dart';
-import 'package:urban_clap/res/utils/utils.dart';
+import 'package:urban_clap_vendor/feature/authentication/login/presentation/controller/login_controller.dart';
+import 'package:urban_clap_vendor/res/color/app_color.dart';
+import 'package:urban_clap_vendor/res/common/common_button.dart';
+import 'package:urban_clap_vendor/res/common/custom_app_bar.dart';
+import 'package:urban_clap_vendor/res/constant/constant_data.dart';
+import 'package:urban_clap_vendor/res/utils/utils.dart';
 
 class OtpScreen extends StatefulWidget {
   final String phone;
@@ -106,7 +106,9 @@ class _OtpScreenState extends State<OtpScreen> {
                         height: Constant.height * .06,
                         isLoading: loginVM.isLoading.value,
                       );
-                    },)
+                    }),
+
+                    SizedBox(height: Constant.height * .08),
                   ],
                 ),
               ),

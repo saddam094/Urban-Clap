@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:urban_clap/core/usecases/app_exception.dart';
-import 'package:urban_clap/res/preferences/user_preferences.dart';
-import 'package:urban_clap/res/utils/utils.dart';
+import 'package:urban_clap_vendor/core/usecases/app_exception.dart';
+import 'package:urban_clap_vendor/res/preferences/user_preferences.dart';
+import 'package:urban_clap_vendor/res/utils/utils.dart';
 import 'base_api_services.dart';
 
 class NetworkApiServices extends BaseApiServices {
